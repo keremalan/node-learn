@@ -3,7 +3,7 @@ var router = express.Router();
 const Post = require('../models/Post');
 
 
-router.get('/posts', async (req, res) => {
+router.get('/', async (req, res) => {
     try{
         const posts = await Post.find();
         res.json(posts);
@@ -11,6 +11,8 @@ router.get('/posts', async (req, res) => {
         res.json({message: err});
     }
 });
+
+// new post
 
 router.post('/', async (req, res) => {
     const post = new Post({
@@ -29,8 +31,38 @@ router.get('/transpirit', (req, res) => {
     res.send('fifi');
 });
 
-router.get('/:postId', (req, res) => {
-    console.log(req.params.posdId);
+// specific post
+
+router.get('/:postId', async (req, res) => {
+    try{
+        const post = await Post.findById(req.params.postId);
+        res.json(post);
+    }catch(err){
+        res.json({message: err});
+    }
 });
+
+// delete post
+router.delete('/:postId', async (req, res) => {
+    try{
+        const removedPost = await Post.remove({ _id: req.params.postId })
+        res.json(removedPost);
+    }catch(err){
+        res.json({ message: err});
+    }
+});
+
+// update a post
+router.patch('/:postId', async (req, res) => {
+    try{
+        const updatedPost = await Post.updateOne(
+            { _id: req.params.postId },
+            { $set: {title: req.body.title }}
+            );
+            res.json(updatedPost);
+    }catch(err){
+        res.json({ message: err });
+    }
+})
 
 module.exports = router;

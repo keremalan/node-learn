@@ -1,10 +1,13 @@
 const express = require('express');
 const port = 3333;
 const app = express();
+const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser'); 
 require('dotenv/config');
 
+//Middlewares
+app.use(cors());
 app.use(bodyParser.json()); 
 
 
@@ -15,12 +18,12 @@ app.use('/posts', postsRoute);
 
 // Routes
 app.get('/', (req, res) => {
-    res.send('We are on home')
+    res.send('We are on homes')
 });
 
-app.get('/posts', async (req, res) => {
+app.get('/posts', (req, res) => {
     try{
-        const posts = await Post.find();
+        const posts = Post.find();
         res.json(posts);
     }catch(err){
         res.json({message: err});
